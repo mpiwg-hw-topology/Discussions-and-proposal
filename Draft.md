@@ -21,6 +21,8 @@ Two other types of virtual topologies are also more or less offici allysupported
 5. neighborhood graphs: actually subset of general graphs (because of the
 symmetric adjacency matrix requirement)
 
+**Question** Should these last two types be added to the previous list explicitely?
+
 ## Proposal
 
 Promote topologies from implicit information attached to communicators to
@@ -53,7 +55,7 @@ work on the naming scheme/coordinates of the MPI processes in the topology.
 ### Relationship between topologies and other MPI objects
 
 A possible way would be to adopt the same  scheme as in Sessions :
-process set -> group -> communicator
+Process set -> group -> communicator
 
 Here,  we start with a process set, an unstructured "object", with almost
 no properties (a pset has a name and that's it) and turn it into something more structured.
@@ -67,8 +69,8 @@ graph TD
 We can then apply the same logic to create other MPI objects/concepts:
 - MPI Group + context ID = an MPI Communicator (with a Topology since the group had one)
 And then:
-- MPI Comm + memory region = an MPI Window (now featuring a topology structure)
-- MPI Comm + File handle = MPI file (now featuring a topology structure)
+- MPI Comm + memory region = an MPI Window (now featuring a topology structure to boot)
+- MPI Comm + File handle = MPI file (now featuring a topology structure to boot)
 
 
 ### Naming schemes/coordinates
