@@ -101,9 +101,16 @@ the standard.
 Actually, reordering ranks is switching from a naming scheme to another.
 Instead of a simple function parameter, can we have:
    `MPI_Reorder(IN int *tuple, OUT int* tuple);`
-**Note**  This is more a mapping function actually  and Transformation != map 
+**Note**  This is more a mapping function actually  and Transformation != map
+Functionality:
+1- Transform a topology into another one or create a new topology from an existing one
+(or even a set of input topologies into a new one)
+2- Map: determine the coordinates of a Process in the new topology given the
+coordinates in the old topology
+**Question** Does reordering imply/necessitates isomorphism?
 
-How is this different than calling N times MPI_Graph_map?
+
+How is this different than calling N times `MPI_Graph_map`?
 
 **Note**
 - mapping a virtual topology onto another virtual topology => reordering of ranks
