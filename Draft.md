@@ -1,6 +1,8 @@
 # Topologies (Draft)
 --------------------
 
+## Generic considerations
+
 In the current version on the standard, (virtual topologies) are not directly
 usable.
 Topology *information* is attached to a communicator and is accessible
@@ -15,13 +17,26 @@ were introduced to alleviate the scalability issues that exist in the
 The topology type can be queried with a call to `MPI_TOPO_TEST(comm,status)` procedure
 (status can also be `MPI_UNDEFINED`)
 
-Two other types of virtual topologies are also more or less offici allysupported:
+Two other types of virtual topologies are also more or less officially supported:
 
 4. bipartite graphs through the properties of intercommunicators
 5. neighborhood graphs: actually subset of general graphs (because of the
 symmetric adjacency matrix requirement)
 
-**Question** Should these last two types be added to the previous list explicitely?
+
+- **Question** Should these last two types be added to the previous list explicitly?
+- **Question** Remove `MPI_CART`? (covered by `MPI_DIST_GRAPH`)
+- Generalize Cartesian to euclidian space (support of diagonals)
+- Elliptic topologies?
+
+A Topology is rather a *topological* space. That is especially true for MPI_DIST_GRAPH
+and more precisely MPI_CART is a *metric* space. 
+
+If redesign of the interface: should the new objects align with their mathematical
+counterparts? (b/c MPI is aimed at scientists).
+
+This redesign is also the opportunity to switch from a flat programming model
+to a more structured one, featuring neigborhoods and/or hierarchies for instance.
 
 ## Proposal
 
@@ -103,11 +118,13 @@ Instead of a simple function parameter, can we have:
    `MPI_Reorder(IN int *tuple, OUT int* tuple);`
 **Note**  This is more a mapping function actually  and Transformation != map
 Functionality:
+
 1- Transform a topology into another one or create a new topology from an existing one
 (or even a set of input topologies into a new one)
 2- Map: determine the coordinates of a Process in the new topology given the
 coordinates in the old topology
-**Question** Does reordering imply/necessitates isomorphism?
+
+**Question** Does reordering implies or necessitates isomorphism?
 
 
 How is this different than calling N times `MPI_Graph_map`?
