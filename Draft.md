@@ -163,3 +163,19 @@ A process set cannot be larger that the set named mpi://WORLD
 - **Resource sets** contain *processors* with physical topology
 A resource set can expand in the future of the application, especially
 if/when MPI processes can migrate/change their resource binding
+
+===================================================================================
+
+* map one topo to the other -> graph embedding according to some metric (bissection BW)
+Map one of many virtual topologies to the hw one
+
+
+* Map -> did it do something?
+    -> if yes, how well did it perform?
+
+  MPI_Topo_embedd(MPI_Topology topo1, MPI_Topology topo2, int *mapping_res, int *flag, int *quality)
+
+  Test of virtual topo types against the hw one and get a the quality result
+  to make the decision on which one to use.
+
+  How to pass user information (pattern, frequency, etc)?
