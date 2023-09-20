@@ -186,6 +186,7 @@ How to pass user information (pattern, frequency, etc)?
 ### Principle
 The current way to use communicators with or without a topology attached to it is to:
 1- create the communicator
+
 2- create requests for persistent communications or call communication procedures
 that use this communicator
 When the communicator is created, it can't be optimized for the communication pattern
@@ -194,7 +195,9 @@ that is goind to be applied.
 The proposed scheme reverses this state of things:
 1- Create a request to construct a communicator (with or without topology information attached)
 (cf `MPI_Comm_idup`)
+
 2- Init all communication operations
+
 3- Wait for effective communication creation. Since the communication pattern is known
 beforehand, optimizations can be applied.
 
@@ -202,6 +205,7 @@ beforehand, optimizations can be applied.
 1- Side-effect: lift some restriction on MPI_Comm_idup
 (i.e. "It is erroneous to use the communicator newcomm as an input argument to other MPI
 functions before the `MPI_COMM_IDUP` operation completes.")
+
 2- Process identification issue: when/if creating a new communication (request) with
 a call to a topology creation function, the reorder parameter can be set to 1.
 Then the MPI process ranks will probably be different from the ones in the initial communicator.
