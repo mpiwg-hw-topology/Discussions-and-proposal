@@ -194,19 +194,34 @@ that is goind to be applied.
 
 The proposed scheme reverses this state of things:
 1- Create a request to construct a communicator (with or without topology information attached)
-(cf `MPI_Comm_idup`)
+(cf `MPI_Comm_idup`). This should be a collective call that does not necessarily
+synchronize (probably not actually).
 
 2- Init all communication operations
 
 3- Wait for effective communication creation. Since the communication pattern is known
-beforehand, optimizations can be applied.
+beforehand, optimizations can be applied (e.g ranks reordering). This can be achieved by
+`MPI_Wait` or `MPI_Comm_commit`. The latter has to be collective and has to synchronize
+(probalby). It does not just wait for the communicator creation but also
+for the persistent operations to be set up and usable (as in prepared) as well.
 
-### Issues
+
+
+### Issues/Open questions
 1- Side-effect: lift some restriction on MPI_Comm_idup
 (i.e. "It is erroneous to use the communicator newcomm as an input argument to other MPI
 functions before the `MPI_COMM_IDUP` operation completes.")
 
-2- Process identification issue: when/if creating a new communication (request) with
+2- Pre-exisiting communications (`MPI_COMM_SELF`, `MPI_COMM_WORLD`) should be considered as
+already committed and should not be committed again (no-op or erroneous if this
+kind of handle is used in the commit procedure)
+
+3- Question: are the only operations authorized on the communicator the ones
+registered before the call to wait/commit ?
+
+4- Question: how to optimize with coalesced collective operations? 
+
+5- Process identification issue: when/if creating a new communication (request) with
 a call to a topology creation function, the reorder parameter can be set to 1.
 Then the MPI process ranks will probably be different from the ones in the initial communicator.
 The new ranks are supposed to be usable only once the new communicator is indeed available
