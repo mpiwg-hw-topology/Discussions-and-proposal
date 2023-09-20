@@ -164,18 +164,53 @@ A process set cannot be larger that the set named mpi://WORLD
 A resource set can expand in the future of the application, especially
 if/when MPI processes can migrate/change their resource binding
 
-===================================================================================
 
 * map one topo to the other -> graph embedding according to some metric (bissection BW)
 Map one of many virtual topologies to the hw one
 
-
-* Map -> did it do something?
+Map -> did it do something?
     -> if yes, how well did it perform?
 
-  MPI_Topo_embedd(MPI_Topology topo1, MPI_Topology topo2, int *mapping_res, int *flag, int *quality)
 
-  Test of virtual topo types against the hw one and get a the quality result
-  to make the decision on which one to use.
+MPI_Topology
 
-  How to pass user information (pattern, frequency, etc)?
+MPI_Topo_embedd(topo1, topo2, int *mapping_res, flag, quality)
+
+Test of virtual topo types against the hw one and get a the quality result
+to make the decision on which one to use.
+
+How to pass user information (pattern, frequency, etc)?
+
+## Possible new design
+
+### Principle
+The current way to use communicators with or without a topology attached to it is to:
+1- create the communicator
+2- create requests for persistent communications or call communication procedures
+that use this communicator
+When the communicator is created, it can't be optimized for the communication pattern
+that is goind to be applied.
+
+The proposed scheme reverses this state of things:
+1- Create a request to construct a communicator (with or without topology information attached)
+(cf `MPI_Comm_idup`)
+2- Init all communication operations
+3- Wait for effective communication creation. Since the communication pattern is known
+beforehand, optimizations can be applied.
+
+### Issues
+1- Side-effect: lift some restriction on MPI_Comm_idup
+(i.e. "It is erroneous to use the communicator newcomm as an input argument to other MPI
+functions before the `MPI_COMM_IDUP` operation completes.")
+2- Process identification issue: when/if creating a new communication (request) with
+a call to a topology creation function, the reorder parameter can be set to 1.
+Then the MPI process ranks will probably be different from the ones in the initial communicator.
+The new ranks are supposed to be usable only once the new communicator is indeed available
+(after the commit/wait operation). How can they be used in the calls to the procedures that initialize
+the various persistent communication operations?
+
+
+
+
+
+
