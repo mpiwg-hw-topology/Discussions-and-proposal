@@ -185,6 +185,7 @@ How to pass user information (pattern, frequency, etc)?
 
 ### Principle
 The current way to use communicators with or without a topology attached to it is to:
+
 1- create the communicator
 
 2- create requests for persistent communications or call communication procedures
@@ -193,6 +194,7 @@ When the communicator is created, it can't be optimized for the communication pa
 that is goind to be applied.
 
 The proposed scheme reverses this state of things:
+
 1- Create a request to construct a communicator (with or without topology information attached)
 (cf `MPI_Comm_idup`). This should be a collective call that does not necessarily
 synchronize (probably not actually).
