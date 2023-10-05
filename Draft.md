@@ -210,18 +210,22 @@ for the persistent operations to be set up and usable (as in prepared) as well.
 
 
 ### Issues/Open questions
-1- Side-effect: lift some restriction on MPI_Comm_idup
+~~1- Side-effect: lift some restriction on MPI_Comm_idup
 (i.e. "It is erroneous to use the communicator newcomm as an input argument to other MPI
-functions before the `MPI_COMM_IDUP` operation completes.")
+functions before the `MPI_COMM_IDUP` operation completes.")~~
+=> Easy fix: specifiy in specs 
 
-2- Pre-exisiting communications (`MPI_COMM_SELF`, `MPI_COMM_WORLD`) should be considered as
+~~2- Pre-exisiting communications (`MPI_COMM_SELF`, `MPI_COMM_WORLD`) should be considered as
 already committed and should not be committed again (no-op or erroneous if this
-kind of handle is used in the commit procedure)
+kind of handle is used in the commit procedure)~~
+=> Easy fix: specifiy in specs  
 
 3- Question: are the only operations authorized on the communicator the ones
 registered before the call to wait/commit ?
+=> TBD
 
-4- Question: how to optimize with coalesced collective operations? 
+~~4- Question: how to optimize with coalesced collective operations?~~
+=> Easy fix: Not part of the proposal
 
 5- Process identification issue: when/if creating a new communication (request) with
 a call to a topology creation function, the reorder parameter can be set to 1.
@@ -229,7 +233,7 @@ Then the MPI process ranks will probably be different from the ones in the initi
 The new ranks are supposed to be usable only once the new communicator is indeed available
 (after the commit/wait operation). How can they be used in the calls to the procedures that initialize
 the various persistent communication operations?
-
+=> that's a tricky one, cf example V2
 
 
 
