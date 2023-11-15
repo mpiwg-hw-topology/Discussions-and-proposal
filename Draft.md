@@ -274,7 +274,7 @@ in the pt2pt op, call `MPI_BUFFER_DEFERRED` (a la `MPI_IN_PLACE`) instead of the
 
 Then after the `MPI_Wait` (trigerring the comm creation) call ` MPI_Register_buffer(void *addr,MPI_Request req);`
 where req is the same handle that is ouptut from the init call (e.g. `MPI_Send_init`)
-See `example_pt2pt.c` in repo.
+See [example_pt2pt.c](https://github.com/mpiwg-hw-topology/code-examples/blob/main/example_pt2pt.c).
 
 5- if topology is made restrictive, then the Bcast is similar in behaviour with pt2pt
 operations w.r.t buffer addresses, plus some processes are not involved and call
