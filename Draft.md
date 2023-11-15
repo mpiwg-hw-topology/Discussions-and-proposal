@@ -236,6 +236,51 @@ the various persistent communication operations?
 => that's a tricky one, cf example V2
 
 
+### Discussion
+Based on the second example (`example_v2.c`):
+
+1- Naming scheme creation functions are synchronizing because if/when reordering is
+enabled, an MPI process might need the informations/parameters passed to the function
+by other parameters. This is the case in particular for distributed graphs naming schemes
+(a.k.a topology constructors) which might be synchronizing then (maybe not, depends
+on how the mapping should be done). 
+This might not be necessary in the Cartesian case, as parameters
+are (should be) all the same on every involved MPI process.
+There could be exchange of information (e.g. to gather hardware information) but
+not necessarily with another MPI process but rather with a SW agent (that can even
+be supported by a progress thread).
+
+2- In the case of Cartesian topologies, since the structure is known, it is easy for
+a process to identify its place in the topology. Its name a tuple (size = # of dimensions)
+and a process can have a "good vision" in the topology of another process' place.
+Also neighbors transitivity is possible because of the structure.
+In the case of graphs and distributed graphs, little can be said about a process' "location"
+in the topology once the naming scheme has been called/resolved. A process knows its
+neighbors and the only thing usable is the reflexivity of the neighborhood relationship.
+
+3- Notion of local addressing/identifiers, without a meaning outside each process that
+determines the ordering of its neighbors. Reorder meaning in this case?? Myabe irrelevant.
+So, it the naming is local, the procedure can be local. But if more information is needed
+(e.g. values of parameters passed to the procedure by other processes), then synchronizing,
+therefore non local.
+
+4- Data partition should not be happening *before* the `MPI_Wait` operation that creates/commits
+the new communicator. Issue: using the address of the data buffer before the processes know their
+respective roles is not realistic. Maybe OK for collectives but not for pt2pt and RMA.
+MPI_Send_init should be split into two parts.
+
+How about an `MPI_Register_address` function ?
+in the pt2pt op, call `MPI_BUFFER_DEFERRED` (a la `MPI_IN_PLACE`) instead of the buffer address.
+
+Then after the `MPI_Wait` (trigerring the comm creation) call ` MPI_Register_buffer(void *addr,MPI_Request req);`
+where req is the same handle that is ouptut from the init call (e.g. `MPI_Send_init`)
+See `example_pt2pt.c` in repo.
+
+5- if topology is made restrictive, then the Bcast is similar in behaviour with pt2pt
+operations w.r.t buffer addresses, plus some processes are not involved and call
+`MPI_Bcast` anyway => unused address buffer. For such process, what is the meaning
+of `MPI_Bcast_init`?
+
 
 
 
