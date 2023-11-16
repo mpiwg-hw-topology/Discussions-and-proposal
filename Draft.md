@@ -276,11 +276,24 @@ Then after the `MPI_Wait` (trigerring the comm creation) call ` MPI_Register_buf
 where req is the same handle that is ouptut from the init call (e.g. `MPI_Send_init`)
 See [example_pt2pt.c](https://github.com/mpiwg-hw-topology/code-examples/blob/main/example_pt2pt.c).
 
-OR:
+Remarks:
+* Orthogonal, self-contained feature 
+* ` MPI_Register_buffer(MPI_Request req, void *addr);` instead of  ` MPI_Register_buffer(void *addr,MPI_Request req);`
+* Provide a list of buffer addresses : ` MPI_Register_buffer(MPI_Request req, void *addr_array);` the argument is still
+of type `void *` but is in reality of type `void **`
+* Do we need also to modify the `count` field of `MPI_XXX_init`?
+=> potential issue with what we want to do w.r.t topologies since modifying the number of
+elements might substantially change the communication pattern.
+* What kind of use case for this feature (outside the topology case)?
+* Need to check if it solves the issues with the `MPI_Bcast` example
 
-an `MPI_Schedule_op` function which indicated which kind of operation is to be
+
+OR:
+~~an `MPI_Schedule_op` function which indicated which kind of operation is to be
 performed on the communicator. Only the info pertaining to the communication pattern
-is useful or is it not?
+is useful or is it not?~~
+issue: need to provide an extensive list of supported operations, almost the need
+for a metalanguage.
 
 
 5- if topology is made restrictive, then the Bcast is similar in behaviour with pt2pt
