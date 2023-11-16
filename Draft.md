@@ -276,10 +276,18 @@ Then after the `MPI_Wait` (trigerring the comm creation) call ` MPI_Register_buf
 where req is the same handle that is ouptut from the init call (e.g. `MPI_Send_init`)
 See [example_pt2pt.c](https://github.com/mpiwg-hw-topology/code-examples/blob/main/example_pt2pt.c).
 
+OR:
+
+an `MPI_Schedule_op` function which indicated which kind of operation is to be
+performed on the communicator. Only the info pertaining to the communication pattern
+is useful or is it not?
+
+
 5- if topology is made restrictive, then the Bcast is similar in behaviour with pt2pt
 operations w.r.t buffer addresses, plus some processes are not involved and call
 `MPI_Bcast` anyway => unused address buffer. For such process, what is the meaning
 of `MPI_Bcast_init`?
+
 
 
 
